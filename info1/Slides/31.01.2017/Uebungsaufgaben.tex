@@ -1,0 +1,73 @@
+\documentclass[11pt]{article}
+\input{/Latex/packages.tex}
+\input{/Latex/commands.tex}
+
+\title{Übungsaufgaben: Informatik I WS 16/17}
+\author{Steffen Lindner}
+
+\begin{document}
+\maketitle
+
+\section{Records}
+
+\begin{enumerate}
+	\item Schreibe eine Daten- und Recorddefinition für 3-dimensionale Vektoren (vector).
+	\item Schreibe eine Prozedur, die die Länge eines Vectors berechnet.
+\end{enumerate}
+
+\section{Prozeduren auf Listen}
+
+\begin{enumerate}
+	\item Schreibe eine Prozedur \tb{sorted?}, die überprüft, ob eine Liste sortiert ist. Die Prozedur akzeptiert eine beliebige Liste und einen Vergleichsoperator für eine lexikalische Ordnung.
+	
+	\begin{center}
+		(: sorted? ((list-of \%a) (\%a \%a $\ra$ boolean) $\ra$ boolean)) 
+	\end{center}
+	
+	\item Schreibe eine Prozedur \tb{sumEven}, die zwei Listen von Zahlen akzeptiert und die geraden Zahlen addiert.
+	
+	\begin{center}
+		(: sumEven ((list-of number) (list-of number) $\ra$ number))	
+	\end{center}
+\end{enumerate}
+
+\section{Streams}
+
+\begin{enumerate}
+	\item Schreibe eine Prozedur \tb{stream-merge}, die zwei Streams akzeptiert und den alternierenden Stream der beiden Streams bildet.
+	
+	\begin{center}
+		(: stream-merge ((stream-of \%a) (stream-of \%a) $\ra$ (stream-of \%a)))
+	\end{center}
+\end{enumerate}
+
+\section{Higher Order Procedures - H.O.P}
+
+Programmieren Sie die Funktionen \tb{filter} und \tb{map} nur durch die Verwendung von fold.
+
+\section{Ausdrücke vereinfachen}
+
+Vereinfache folgende Scheme Ausdrücke.
+
+\ba
+	\item \begin{lstlisting}
+(define compare
+  (lambda (t)
+	(cond
+	  ((> t 0) #t)
+	  ((< t 0) #f)
+	  ((= t 0) #t))))	
+	\end{lstlisting}
+	
+	\item 
+	
+	\begin{lstlisting}
+(define f
+  (lambda (a b c)
+    (not (and a 
+	  (or a c
+	  (or a b))))))
+	\end{lstlisting}
+\ea 
+
+\end{document}

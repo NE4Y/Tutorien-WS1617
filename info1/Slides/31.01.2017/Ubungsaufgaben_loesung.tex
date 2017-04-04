@@ -1,0 +1,187 @@
+\documentclass[11pt]{article}
+\input{/Latex/packages.tex}
+\input{/Latex/commands.tex}
+
+\title{Übungsaufgaben: Informatik I WS 16/17 \\ Musterlösung}
+\author{Steffen Lindner}
+
+\begin{document}
+\maketitle
+
+\section{Records}
+
+\begin{enumerate}
+	\item Schreibe eine Daten- und Recorddefinition für 3-dimensionale Vektoren (vector).
+	
+	\tb{Lösung:}
+	
+	\begin{lstlisting}
+; Ein Vektor (vector) besteht aus
+; einer x-Koordinate (vector-x)
+; einer y-Koordinate (vector-y)
+; einer z-Koordinate (vector-z)
+(: make-vector (number number number -> vector))
+(: vector? (vector -> boolean))
+(: vector-x (vector -> number))
+(: vector-y (vector -> number))
+(: vector-z (vector -> number))
+(define-record-procedures vector
+  make-vector
+  vector?
+  (vector-x
+   vector-y
+   vector-z))	
+	\end{lstlisting}
+
+	\item Schreibe eine Prozedur, die die Länge eines Vectors berechnet.
+	
+	\tb{Lösung:}
+	
+	\begin{lstlisting}
+(: vector-length (vector -> number))
+(check-expect (vector-length v1) 1)
+(check-within (vector-length v2) (sqrt 14) 0.01)
+(define vector-length
+  (lambda (v)
+    (sqrt
+     (+
+      (expt (vector-x v) 2)
+      (expt (vector-y v) 2)
+      (expt (vector-z v) 2)))))
+	
+	\end{lstlisting}
+
+\end{enumerate}
+
+\section{Prozeduren auf Listen}
+
+\begin{enumerate}
+	\item Schreibe eine Prozedur \tb{sorted?}, die überprüft, ob eine Liste sortiert ist. Die Prozedur akzeptiert eine beliebige Liste und einen Vergleichsoperator für eine lexikalische Ordnung.
+	
+	\begin{center}
+		(: sorted? ((list-of \%a) (\%a \%a $\ra$ boolean) $\ra$ boolean)) 
+	\end{center}
+	
+	\tb{Lösung:}
+	
+	\begin{lstlisting}
+(: sorted? ((list-of %a) (%a %a -> boolean) -> boolean))
+(define sorted?
+  (lambda (xs comp)
+    (cond
+      ((empty? xs) #t)
+      ((empty? (rest xs)) #t)
+      (else
+       (and (comp (first xs) (first (rest xs)))
+           (sorted? (rest xs) comp))))))
+	\end{lstlisting}
+	
+	\item Schreibe eine Prozedur \tb{sumEven}, die zwei Listen von Zahlen akzeptiert und die geraden Zahlen addiert.
+	
+	
+	
+	\begin{center}
+		(: sumEven ((list-of number) (list-of number) $\ra$ number))	
+	\end{center}
+	
+	\tb{Lösung:}
+	
+	\begin{lstlisting}
+(: sumEven ((list-of number) (list-of number) -> number))
+(check-expect (sumEven (list 1 2 3) (list 4 5 6)) 12)
+(define sumEven
+  (lambda (xs ys)
+    (letrec
+        ((flatten
+         (lambda (xs ys)
+           (append xs ys))))
+         (fold 0 +
+               (filter (lambda (x)
+                         (= (modulo x 2) 0))
+                       (flatten xs ys))))))
+	\end{lstlisting}
+\end{enumerate}
+
+\section{Streams}
+
+\begin{enumerate}
+	\item Schreibe eine Prozedur \tb{stream-merge}, die zwei Streams akzeptiert und den alternierenden Stream der beiden Streams bildet.
+	
+	\begin{center}
+		(: stream-merge ((stream-of \%a) (stream-of \%a) $\ra$ (stream-of \%a)))
+	\end{center}
+	
+	\tb{Lösung:}
+	
+	\begin{lstlisting}
+(: stream-merge ((stream-of %a) (stream-of %a) -> (stream-of %a)))
+(define stream-merge
+  (lambda (s1 s2)
+    (make-cons (head s1)
+               (lambda () (stream-merge s2 (force (tail s1)))))))
+	\end{lstlisting}
+\end{enumerate}
+
+\section{Higher Order Procedures - H.O.P}
+
+\begin{enumerate}
+	\item Programmieren Sie die Funktionen \tb{filter} und \tb{map} nur durch die Verwendung von fold.
+
+\pm 
+
+\tb{Lösung:}
+
+\begin{lstlisting}
+(define filter
+  (lambda (p xs)
+    (fold empty (lambda (a b) (if (p a) (make-pair a b) b)) xs)))
+
+(define map
+  (lambda (p xs)
+    (fold empty (lambda (a b) (make-pair (p a) b)) xs)))
+\end{lstlisting}
+
+\end{enumerate}
+
+\section{Ausdrücke vereinfachen}
+
+Vereinfache folgende Scheme Ausdrücke.
+
+\ba
+	\item \begin{lstlisting}
+(define compare
+  (lambda (t)
+	(cond
+	  ((> t 0) #t)
+	  ((< t 0) #f)
+	  ((= t 0) #t))))	
+	\end{lstlisting}
+	
+	\tb{Lösung:}
+	
+	\begin{lstlisting}
+(define compare
+  (lambda (t)
+    (>= t 0)))
+	\end{lstlisting}
+	
+	\item 
+	
+	\begin{lstlisting}
+(define f
+  (lambda (a b c)
+    (not (and a 
+	  (or a c
+	  (or a b))))))
+	\end{lstlisting}
+	
+	\tb{Lösung:}
+	
+	\begin{lstlisting}
+(define f
+  (lambda (a b c)
+    (not a)))
+	\end{lstlisting}
+\ea 
+
+\end{document}
